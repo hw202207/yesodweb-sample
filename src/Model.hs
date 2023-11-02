@@ -11,6 +11,7 @@
 {-# LANGUAGE StandaloneDeriving         #-}
 {-# LANGUAGE UndecidableInstances       #-}
 {-# LANGUAGE DataKinds                  #-}
+{-# LANGUAGE TypeOperators #-}
 module Model where
 
 import ClassyPrelude.Yesod
