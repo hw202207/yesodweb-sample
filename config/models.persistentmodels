@@ -16,5 +16,5 @@ Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived
     userId UserId Maybe
     deriving Eq
     deriving Show
-FooBAR
+FooBACode sql=foo_ba_code
     name Text

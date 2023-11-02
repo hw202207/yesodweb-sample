@@ -8,7 +8,7 @@ module Handler.Hello where
 
 import Import
 
-getHelloR :: FooBARId -> Handler Html
+getHelloR :: FooBACodeId -> Handler Html
 getHelloR _fooBarId = do
     defaultLayout $ do
         setTitle "Hello Yesod!"
