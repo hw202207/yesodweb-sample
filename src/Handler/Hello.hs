@@ -8,8 +8,8 @@ module Handler.Hello where
 
 import Import
 
-getHelloR :: UserId -> Handler Html
-getHelloR _userId = do
+getHelloR :: FooBARId -> Handler Html
+getHelloR _fooBarId = do
     defaultLayout $ do
         setTitle "Hello Yesod!"
         $(widgetFile "hello")

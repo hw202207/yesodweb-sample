@@ -13,4 +13,4 @@
 
 /profile ProfileR GET
 
-/hello/#UserId HelloR GET
+/hello/#FooBARId HelloR GET
