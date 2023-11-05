@@ -14,14 +14,14 @@ import Import.NoFoundation
 import Data.Kind            (Type)
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
-import Text.Jasmine         (minifym)
+-- import Text.Jasmine         (minifym)
 import Control.Monad.Logger (LogSource)
 
 -- Used only when in "auth-dummy-login" setting is enabled.
 import Yesod.Auth.Dummy
 
 import Yesod.Auth.OpenId    (authOpenId, IdentifierType (Claimed))
-import Yesod.Default.Util   (addStaticContentExternal)
+-- import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
 import qualified Data.CaseInsensitive as CI
@@ -116,11 +116,11 @@ instance Yesod App where
                     , menuItemRoute = HomeR
                     , menuItemAccessCallback = True
                     }
-                , NavbarLeft $ MenuItem
-                    { menuItemLabel = "Profile"
-                    , menuItemRoute = ProfileR
-                    , menuItemAccessCallback = isJust muser
-                    }
+                -- , NavbarLeft $ MenuItem
+                --     { menuItemLabel = "Profile"
+                --     , menuItemRoute = ProfileR
+                --     , menuItemAccessCallback = isJust muser
+                --     }
                 , NavbarRight $ MenuItem
                     { menuItemLabel = "Login"
                     , menuItemRoute = AuthR LoginR
@@ -146,7 +146,7 @@ instance Yesod App where
         -- you to use normal widget features in default-layout.
 
         pc <- widgetToPageContent $ do
-            addStylesheet $ StaticR css_bootstrap_css
+            -- addStylesheet $ StaticR css_bootstrap_css
                                     -- ^ generated from @Settings/StaticFiles.hs@
             $(widgetFile "default-layout")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
@@ -163,7 +163,7 @@ instance Yesod App where
         -> Handler AuthResult
     -- Routes not requiring authentication.
     isAuthorized (AuthR _) _ = return Authorized
-    isAuthorized (HelloR _) _ = return Authorized
+    -- isAuthorized (HelloR _) _ = return Authorized
     isAuthorized Hello1R _ = return Authorized
     isAuthorized Hello2R _ = return Authorized
     isAuthorized Hello3R _ = return Authorized
@@ -2164,15 +2164,15 @@ instance Yesod App where
     isAuthorized Hello1998R _ = return Authorized
     isAuthorized Hello1999R _ = return Authorized
     isAuthorized Hello2000R _ = return Authorized
-    isAuthorized CommentR _ = return Authorized
+    -- isAuthorized CommentR _ = return Authorized
     isAuthorized HomeR _ = return Authorized
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
-    isAuthorized (StaticR _) _ = return Authorized
+    -- isAuthorized (StaticR _) _ = return Authorized
 
     -- the profile route requires that the user is authenticated, so we
     -- delegate to that function
-    isAuthorized ProfileR _ = isAuthenticated
+    -- isAuthorized ProfileR _ = isAuthenticated
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
@@ -2183,20 +2183,21 @@ instance Yesod App where
         -> Text -- ^ The MIME content type
         -> LByteString -- ^ The contents of the file
         -> Handler (Maybe (Either Text (Route App, [(Text, Text)])))
-    addStaticContent ext mime content = do
-        master <- getYesod
-        let staticDir = appStaticDir $ appSettings master
-        addStaticContentExternal
-            minifym
-            genFileName
-            staticDir
-            (StaticR . flip StaticRoute [])
-            ext
-            mime
-            content
-      where
+    addStaticContent _ext _mime _content = do
+      pure Nothing
+        -- master <- getYesod
+        -- let staticDir = appStaticDir $ appSettings master
+        -- addStaticContentExternal
+        --     minifym
+        --     genFileName
+        --     staticDir
+        --     (StaticR . flip StaticRoute [])
+        --     ext
+        --     mime
+        --     content
+      -- where
         -- Generate a unique filename based on the content itself
-        genFileName lbs = "autogen-" ++ base64md5 lbs
+        -- genFileName lbs = "autogen-" ++ base64md5 lbs
 
     -- What messages should be logged. The following includes all messages when
     -- in development, and warnings and errors in production.
@@ -2220,7 +2221,7 @@ instance YesodBreadcrumbs App where
         -> Handler (Text, Maybe (Route App))
     breadcrumb HomeR = return ("Home", Nothing)
     breadcrumb (AuthR _) = return ("Login", Just HomeR)
-    breadcrumb ProfileR = return ("Profile", Just HomeR)
+    -- breadcrumb ProfileR = return ("Profile", Just HomeR)
     breadcrumb  _ = return ("home", Nothing)
 
 -- How to run database actions.

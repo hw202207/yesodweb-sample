@@ -81,7 +81,7 @@ library
     ghc-options: -Wall -fwarn-tabs -O0
     cpp-options: -DDEVELOPMENT
   else
-    ghc-options: -Wall -fwarn-tabs -O2 -keep-tmp-files -v3
+    ghc-options: -Wall -fwarn-tabs -O2 -keep-tmp-files -v3 -g
 
 executable yesodweb-sample
   main-is: main.hs
@@ -90,7 +90,7 @@ executable yesodweb-sample
       Paths_yesodweb_sample
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N -keep-tmp-files -v3
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -v3 -g -keep-tmp-files
   build-depends:
       aeson >=1.4 && <2.2
     , base >=4.9.1.0 && <5
