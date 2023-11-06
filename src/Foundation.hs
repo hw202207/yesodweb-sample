@@ -4,7 +4,6 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE ViewPatterns #-}
-{-# LANGUAGE ExplicitForAll #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE InstanceSigs, TypeOperators #-}
 
@@ -14,9 +13,7 @@ import Import.NoFoundation
 import Data.Kind            (Type)
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
--- import Text.Jasmine         (minifym)
 import Control.Monad.Logger (LogSource)
-
 -- Used only when in "auth-dummy-login" setting is enabled.
 import Yesod.Auth.Dummy
 
@@ -24,8 +21,6 @@ import Yesod.Auth.OpenId    (authOpenId, IdentifierType (Claimed))
 -- import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
-import qualified Data.CaseInsensitive as CI
-import qualified Data.Text.Encoding as TE
 
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -100,54 +95,14 @@ instance Yesod App where
 
     defaultLayout :: Widget -> Handler Html
     defaultLayout widget = do
-        master <- getYesod
-        mmsg <- getMessage
-
-        muser <- maybeAuthPair
         mcurrentRoute <- getCurrentRoute
-
-        -- Get the breadcrumbs, as defined in the YesodBreadcrumbs instance.
-        (title, parents) <- breadcrumbs
-
-        -- Define the menu items of the header.
-        let menuItems =
-                [ NavbarLeft $ MenuItem
-                    { menuItemLabel = "Home"
-                    , menuItemRoute = HomeR
-                    , menuItemAccessCallback = True
-                    }
-                -- , NavbarLeft $ MenuItem
-                --     { menuItemLabel = "Profile"
-                --     , menuItemRoute = ProfileR
-                --     , menuItemAccessCallback = isJust muser
-                --     }
-                , NavbarRight $ MenuItem
-                    { menuItemLabel = "Login"
-                    , menuItemRoute = AuthR LoginR
-                    , menuItemAccessCallback = isNothing muser
-                    }
-                , NavbarRight $ MenuItem
-                    { menuItemLabel = "Logout"
-                    , menuItemRoute = AuthR LogoutR
-                    , menuItemAccessCallback = isJust muser
-                    }
-                ]
-
-        let navbarLeftMenuItems = [x | NavbarLeft x <- menuItems]
-        let navbarRightMenuItems = [x | NavbarRight x <- menuItems]
-
-        let navbarLeftFilteredMenuItems = [x | x <- navbarLeftMenuItems, menuItemAccessCallback x]
-        let navbarRightFilteredMenuItems = [x | x <- navbarRightMenuItems, menuItemAccessCallback x]
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
         -- default-layout-wrapper is the entire page. Since the final
         -- value passed to hamletToRepHtml cannot be a widget, this allows
         -- you to use normal widget features in default-layout.
-
         pc <- widgetToPageContent $ do
-            -- addStylesheet $ StaticR css_bootstrap_css
-                                    -- ^ generated from @Settings/StaticFiles.hs@
             $(widgetFile "default-layout")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
@@ -163,7 +118,8 @@ instance Yesod App where
         -> Handler AuthResult
     -- Routes not requiring authentication.
     isAuthorized (AuthR _) _ = return Authorized
-    -- isAuthorized (HelloR _) _ = return Authorized
+    isAuthorized HomeR _ = return Authorized
+    isAuthorized FaviconR _ = return Authorized
     isAuthorized Hello1R _ = return Authorized
     isAuthorized Hello2R _ = return Authorized
     isAuthorized Hello3R _ = return Authorized
@@ -2165,11 +2121,8 @@ instance Yesod App where
     isAuthorized Hello1999R _ = return Authorized
     isAuthorized Hello2000R _ = return Authorized
     -- isAuthorized CommentR _ = return Authorized
-    isAuthorized HomeR _ = return Authorized
-    isAuthorized FaviconR _ = return Authorized
-    isAuthorized RobotsR _ = return Authorized
+    -- isAuthorized RobotsR _ = return Authorized
     -- isAuthorized (StaticR _) _ = return Authorized
-
     -- the profile route requires that the user is authenticated, so we
     -- delegate to that function
     -- isAuthorized ProfileR _ = isAuthenticated
